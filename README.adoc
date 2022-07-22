@@ -5,3 +5,6 @@ mvn clean package
 
 Run with
 java -jar java-relp-server-demo-jar-with-dependencies.jar
+
+Listens at hardcoded port 1601 logs received content with logback
+

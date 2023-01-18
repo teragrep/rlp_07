@@ -1,10 +1,24 @@
 # Example RELP Server
 
 Build with
+[source, bash]
+----
 mvn clean package
+----
 
 Run with
+[source, bash]
+----
 java -jar java-relp-server-demo-jar-with-dependencies.jar
+----
 
 Listens at hardcoded port 1601 logs received content with logback
 
+Debug output
+
+See src/main/resources for the log4j2.xml
+
+[source, bash]
+----
+java -Dlog4j.configurationFile=log4j2.xml -jar java-relp-server-demo-jar-with-dependencies.jar
+----

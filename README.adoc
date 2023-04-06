@@ -12,7 +12,8 @@ Run with
 java -jar java-relp-server-demo-jar-with-dependencies.jar
 ----
 
-Listens at hardcoded port 1601 logs received content with logback
+Listens at default port 1601 logs received content with logback.
+TLS mode can be enabled with "tls=true" command-line argument. Port can be changed with "port=1234" command-line argument.
 
 Debug output
 

@@ -1,5 +1,6 @@
 package com.teragrep.java_relp_server_demo;
 
+import com.teragrep.rlp_01.SSLContextFactory;
 import com.teragrep.rlp_03.FrameProcessor;
 import com.teragrep.rlp_03.Server;
 import com.teragrep.rlp_03.SyslogFrameProcessor;
@@ -8,37 +9,44 @@ import org.slf4j.LoggerFactory;
 
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLEngine;
-import javax.net.ssl.SSLParameters;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.security.GeneralSecurityException;
-import java.util.Arrays;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
 class Main {
-
     private static final Logger LOGGER = LoggerFactory.getLogger(Main.class);
 
     public static void main(String[] args) throws IOException,
             InterruptedException, GeneralSecurityException {
-        // no arguments, use plain server on port 1601
-       if (args.length == 0) {
-           plainServer();
-       }
-       else if (args.length == 1){
-           // if --tls argument given, use tls server on port 1602
-           if (args[0].equalsIgnoreCase("--tls")) {
-               tlsServer();
-           }
-       }
-       else {
-           throw new IllegalArgumentException("expected max 1 args, got: " + args.length);
-       }
+        int port = 1601;
+        boolean tlsMode = false;
+
+        for (String arg : args) {
+            if (arg.startsWith("port=")) {
+                port = Integer.parseInt(arg.substring(arg.indexOf('=')+1));
+                LOGGER.info("Got port parameter: " + port);
+            }
+            else if (arg.startsWith("tls=")) {
+                String value = arg.substring(arg.indexOf('=')+1);
+                if (value.equalsIgnoreCase("true")) {
+                    tlsMode = true;
+                    LOGGER.info("Got TLS mode parameter. Enabling TLS mode.");
+                }
+            }
+        }
+
+        if (tlsMode) {
+            tlsServer(port);
+        } else {
+            plainServer(port);
+        }
     }
 
-    private static void plainServer() throws IOException,
+    private static void plainServer(int port) throws IOException,
             InterruptedException {
+        LOGGER.info("plain server on port " + port);
         Consumer<byte[]> byteConsumer = bytes -> {
             String message = new String(bytes, StandardCharsets.UTF_8);
             LOGGER.info(message);
@@ -47,16 +55,16 @@ class Main {
         FrameProcessor syslogFrameProcessor =
                 new SyslogFrameProcessor(byteConsumer);
 
-        Server relpServer = new Server(1601, syslogFrameProcessor);
+        Server relpServer = new Server(port, syslogFrameProcessor);
 
         relpServer.start();
 
         Thread.sleep(Long.MAX_VALUE);
     }
 
-    private static void tlsServer() throws
+    private static void tlsServer(int port) throws
             InterruptedException, GeneralSecurityException {
-        System.out.println("tls server");
+        LOGGER.info("tls server on port " + port);
         Consumer<byte[]> byteConsumer = bytes -> {
             String message = new String(bytes, StandardCharsets.UTF_8);
             LOGGER.info(message);
@@ -67,24 +75,19 @@ class Main {
 
         SSLContext sslContext;
         try {
-            sslContext = SSLContextFactory.demoContext();//SSLContextFactory.authenticatedContext("serverkeystore.jks", "password", "TLSv1.2");
+            sslContext = SSLContextFactory.authenticatedContext(
+                    "src/main/resources/keystore-server.jks", "changeit", "TLSv1.3");
         } catch (IOException e) {
             throw new RuntimeException("SSL.demoContext Error: " + e);
         }
 
         Function<SSLContext, SSLEngine> sslEngineFunction = sslCtx -> {
             SSLEngine sslEngine = sslCtx.createSSLEngine();
-            SSLParameters sslParameters = new SSLParameters();
-            sslParameters.setEndpointIdentificationAlgorithm(null);
-            sslEngine.setSSLParameters(sslParameters);
-            sslEngine.setNeedClientAuth(false);
             sslEngine.setUseClientMode(false);
-            sslEngine.setEnabledProtocols(new String[]{"TLSv1.3"});
-            sslEngine.setEnabledCipherSuites(new String[]{"TLS_AES_256_GCM_SHA384"});
             return sslEngine;
         };
 
-        Server relpServer = new Server(1602, syslogFrameProcessor, sslContext, sslEngineFunction);
+        Server relpServer = new Server(port, syslogFrameProcessor, sslContext, sslEngineFunction);
 
         try {
             relpServer.start();

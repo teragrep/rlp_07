@@ -1,6 +1,5 @@
 package com.teragrep.java_relp_server_demo;
 
-import com.teragrep.rlp_01.SSLContextFactory;
 import com.teragrep.rlp_03.FrameProcessor;
 import com.teragrep.rlp_03.Server;
 import com.teragrep.rlp_03.SyslogFrameProcessor;
@@ -10,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLEngine;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.security.GeneralSecurityException;
 import java.util.function.Consumer;
@@ -73,10 +73,13 @@ class Main {
         FrameProcessor syslogFrameProcessor =
                 new SyslogFrameProcessor(byteConsumer);
 
+        // get server keyStore as inputstream, works on JAR packaging as well this way
+        InputStream keyStoreStream = Main.class.getClassLoader().getResourceAsStream("keystore-server.jks");
+
         SSLContext sslContext;
         try {
-            sslContext = SSLContextFactory.authenticatedContext(
-                    "src/main/resources/keystore-server.jks", "changeit", "TLSv1.3");
+            sslContext = SSLDemoContextFactory.authenticatedContext(
+                    keyStoreStream, "changeit", "TLSv1.3");
         } catch (IOException e) {
             throw new RuntimeException("SSL.demoContext Error: " + e);
         }

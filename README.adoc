@@ -9,7 +9,7 @@ mvn clean package
 Run with
 [source, bash]
 ----
-java -jar java-relp-server-demo-jar-with-dependencies.jar
+java -jar rlp_07.jar
 ----
 
 Listens at default port 1601 logs received content with logback.
@@ -21,5 +21,5 @@ See src/main/resources for the log4j2.xml
 
 [source, bash]
 ----
-java -Dlog4j.configurationFile=log4j2.xml -jar java-relp-server-demo-jar-with-dependencies.jar
+java -Dlog4j.configurationFile=log4j2.xml -jar rlp_07.jar
 ----

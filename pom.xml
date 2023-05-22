@@ -1,10 +1,10 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.teragrep</groupId>
-  <artifactId>java-relp-server-demo</artifactId>
+  <artifactId>rlp_07</artifactId>
   <version>${revision}${sha1}${changelist}</version>
   <packaging>jar</packaging>
-  <name>java-relp-server-demo</name>
+  <name>rlp_07</name>
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven.compiler.source>1.8</maven.compiler.source>
@@ -19,7 +19,7 @@
     <dependency>
       <groupId>com.teragrep</groupId>
       <artifactId>rlp_03</artifactId>
-      <version>1.5.2</version>
+      <version>1.7.5</version>
     </dependency>
     <dependency>
       <groupId>org.apache.logging.log4j</groupId>

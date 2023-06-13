@@ -25,15 +25,15 @@ class Main {
         LOGGER.info(message);
     };
     private static final FrameProcessor syslogFrameProcessor = new SyslogFrameProcessor(byteConsumer);
+    static Config config;
 
     public static void main(String[] args) throws IOException, InterruptedException {
-        int port = Integer.parseInt(System.getProperty("port", "1601"));
-        boolean tlsMode = Boolean.parseBoolean(System.getProperty("tls", "false"));
+        config = new Config();
         try {
-            if (tlsMode) {
-                tlsServer(port);
+            if (config.isTls()) {
+                tlsServer();
             } else {
-                plainServer(port);
+                plainServer();
             }
         }
         catch (Exception e) {
@@ -41,35 +41,21 @@ class Main {
         }
     }
 
-    private static void plainServer(int port) throws IOException, InterruptedException {
-        LOGGER.info("Starting plain server on port " +port);
-        Server relpServer = new Server(port, syslogFrameProcessor);
+    private static void plainServer() throws IOException, InterruptedException {
+        LOGGER.info("Starting plain server on port " + config.getPort());
+        Server relpServer = new Server(config.getPort(), syslogFrameProcessor);
         relpServer.start();
         Thread.sleep(Long.MAX_VALUE);
     }
 
-    private static void tlsServer(int port) throws IOException, InterruptedException {
-        LOGGER.info("Starting TLS server on port " + port);
-        String keystorePath = System.getProperty("tlsKeystore");
-        InputStream keyStoreStream;
-        if(keystorePath != null) {
-            LOGGER.info("Using user supplied keystore");
-            Path path = Paths.get(keystorePath);
-            if(!path.toFile().exists()) {
-                throw new RuntimeException("File " + keystorePath + " doesn't exist");
-            }
-            keyStoreStream = Files.newInputStream(path);
-        }
-        else {
-            LOGGER.info("Using default keystore");
-            // get server keyStore as inputstream, works on JAR packaging as well this way
-            keyStoreStream = Main.class.getClassLoader().getResourceAsStream("keystore-server.jks");
-        }
+    private static void tlsServer() throws IOException, InterruptedException {
+        LOGGER.info("Starting TLS server on port " + config.getPort());
+
         SSLContext sslContext;
         try {
             sslContext = TLSContextFactory.authenticatedContext(
-                keyStoreStream,
-                "changeit",
+                config.getKeystoreStream(),
+                config.getKeystorePassword(),
                 "TLSv1.3"
             );
         } catch (GeneralSecurityException e) {
@@ -82,7 +68,7 @@ class Main {
             return sslEngine;
         };
 
-        Server relpServer = new Server(port, syslogFrameProcessor, sslContext, sslEngineFunction);
+        Server relpServer = new Server(config.getPort(), syslogFrameProcessor, sslContext, sslEngineFunction);
 
         relpServer.start();
 

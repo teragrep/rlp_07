@@ -86,7 +86,7 @@
           </descriptors>
           <archive>
             <manifest>
-              <mainClass>com.teragrep.java_relp_server_demo.Main</mainClass>
+              <mainClass>com.teragrep.rlp_07.Main</mainClass>
               <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
             </manifest>
           </archive>

@@ -1,4 +1,4 @@
-package com.teragrep.java_relp_server_demo;
+package com.teragrep.rlp_07;
 
 import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.SSLContext;
@@ -8,7 +8,7 @@ import java.io.InputStream;
 import java.security.GeneralSecurityException;
 import java.security.KeyStore;
 
-public class SSLDemoContextFactory {
+public class TLSContextFactory {
     public static SSLContext authenticatedContext(
             InputStream keyStoreStream,
             String keystorePassword,

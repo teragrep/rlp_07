@@ -13,7 +13,9 @@ java -jar rlp_07.jar
 ----
 
 Listens at default port 1601 logs received content with logback.
-TLS mode can be enabled with "tls=true" command-line argument. Port can be changed with "port=1234" command-line argument.
+Port can be changed with "-Dport=1234" command-line argument.
+TLS mode can be enabled with "-Dtls=true" command-line argument.
+Custom server keystore can be supplied with -DtlsKeystore=path/to/file.jks
 
 Debug output
 

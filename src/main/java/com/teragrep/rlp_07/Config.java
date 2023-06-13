@@ -1,24 +1,24 @@
 package com.teragrep.rlp_07;
 public class Config {
-    private static int port;
+    private final int port;
 
     public int getPort() {
         return port;
     }
 
-    private static boolean isTls;
+    private final boolean isTls;
 
     public boolean isTls() {
         return isTls;
     }
 
-    private static String keystorePassword;
+    private final String keystorePassword;
 
     public String getKeystorePassword() {
         return keystorePassword;
     }
 
-    private static String keystorePath;
+    private final String keystorePath;
     public String getKeystorePath() {
         return keystorePath;
     }

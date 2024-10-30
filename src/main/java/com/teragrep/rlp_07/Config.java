@@ -1,27 +1,10 @@
 package com.teragrep.rlp_07;
 public class Config {
-    private final int port;
-
-    public int getPort() {
-        return port;
-    }
-
-    private final boolean isTls;
-
-    public boolean isTls() {
-        return isTls;
-    }
-
-    private final String keystorePassword;
-
-    public String getKeystorePassword() {
-        return keystorePassword;
-    }
-
-    private final String keystorePath;
-    public String getKeystorePath() {
-        return keystorePath;
-    }
+    public final int port;
+    public final boolean isTls;
+    public final String keystorePassword;
+    public final String keystorePath;
+    public final String loglevel;
     public Config() {
         try {
             port = Integer.parseInt(System.getProperty("port", "1601"));
@@ -31,5 +14,6 @@ public class Config {
         isTls = Boolean.parseBoolean(System.getProperty("tls", "false"));
         keystorePassword = System.getProperty("tlsKeystorePassword", "changeit");
         keystorePath = System.getProperty("tlsKeystore", null);
+        loglevel = System.getProperty("loglevel");
     }
 }

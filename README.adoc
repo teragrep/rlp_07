@@ -22,7 +22,7 @@ Custom server keystore can be supplied with "-DtlsKeystore=path/to/file.jks".
 
 Custom server keystore password can be supplied with "-DtlsKeystorePassword=MyCustomPassword".
 
-Logging level output can be managed with "-Dloglevel=INFO".
+Logging level output can be managed with "-Dloglevel=INFO". You can read more about logging levels https://logging.apache.org/log4j/2.x/manual/customloglevels.html[here]
 
 [source, bash]
 ----

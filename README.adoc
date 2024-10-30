@@ -1,4 +1,4 @@
-# Example RELP Server
+= Example RELP Server
 
 Build with
 [source, bash]
@@ -13,9 +13,13 @@ java -jar rlp_07.jar
 ----
 
 Listens to plain server port 1601 by default and prints received events.
+
 Port can be changed with "-Dport=1234" command-line argument.
+
 TLS mode can be enabled with "-Dtls=true" command-line argument.
+
 Custom server keystore can be supplied with -DtlsKeystore=path/to/file.jks
+
 Custom server keystore password can be supplied with -DtlsKeystorePassword=MyCustomPassword
 
 Debug output
@@ -26,6 +30,31 @@ See src/main/resources for the log4j2.xml
 ----
 java -Dlog4j.configurationFile=log4j2.xml -jar rlp_07.jar
 ----
+
+== Running the container
+
+You can run the prebuilt container by simply running:
+
+`docker run -ti --rm ghcr.io/teragrep/rlp_07/app:latest`
+
+The container respects the following environment variables
+
+[cols]
+|===
+|Environment variable|Property equivalent
+
+|RLP_07_PORT=1243
+|-Dport=1234
+
+|RLP_07_TLS=false
+|-Dtls=false
+
+|RLP_07_TLS_KEYSTORE=/keystore.jks
+|-DtlsKeystore=/keystore.jks
+
+|RLP_07_TLS_KEYSTOREPASSWORD=changeit
+|-DtlsKeystorePassword=changeit
+|===
 
 == Contributing
  

@@ -20,7 +20,7 @@ TLS mode can be enabled with "-Dtls=true" command-line argument.
 
 Custom server keystore can be supplied with "-DtlsKeystore=path/to/file.jks".
 
-Custom server keystore password can be supplied with -DtlsKeystorePassword=MyCustomPassword
+Custom server keystore password can be supplied with "-DtlsKeystorePassword=MyCustomPassword".
 
 Debug output
 

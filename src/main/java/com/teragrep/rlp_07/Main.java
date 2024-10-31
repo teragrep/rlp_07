@@ -3,6 +3,8 @@ package com.teragrep.rlp_07;
 import com.teragrep.rlp_03.FrameProcessor;
 import com.teragrep.rlp_03.Server;
 import com.teragrep.rlp_03.SyslogFrameProcessor;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.core.config.Configurator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -27,37 +29,40 @@ class Main {
     private static final FrameProcessor syslogFrameProcessor = new SyslogFrameProcessor(byteConsumer);
     static Config config;
 
-    public static void main(String[] args) throws IOException, InterruptedException {
+    public static void main(String[] args) {
         config = new Config();
+        if(config.loglevel != null) {
+            LOGGER.info("Setting loglevel to <[{}]>", config.loglevel);
+            Configurator.setAllLevels("com.teragrep", Level.valueOf(config.loglevel));
+        }
         try {
-            if (config.isTls()) {
+            if (config.isTls) {
                 tlsServer();
             } else {
                 plainServer();
             }
         }
         catch (Exception e) {
-            LOGGER.error("Failed to run: " + e.getMessage());
+            LOGGER.error("Failed to run: <{}>", e.getMessage(), e);
         }
     }
 
     private static void plainServer() throws IOException, InterruptedException {
-        LOGGER.info("Starting plain server on port " + config.getPort());
-        Server relpServer = new Server(config.getPort(), syslogFrameProcessor);
+        LOGGER.info("Starting plain server on port <[{}]>", config.port);
+        Server relpServer = new Server(config.port, syslogFrameProcessor);
         relpServer.start();
         Thread.sleep(Long.MAX_VALUE);
     }
 
     private static void tlsServer() throws IOException, InterruptedException {
-        LOGGER.info("Starting TLS server on port " + config.getPort());
+        LOGGER.info("Starting TLS server on port <[{}]>", config.port);
 
-        String keystorePath = config.getKeystorePath();
         InputStream keystoreStream;
-        if(keystorePath != null) {
+        if(config.keystorePath != null) {
             LOGGER.info("Using user supplied keystore");
-            Path path = Paths.get(keystorePath);
+            Path path = Paths.get(config.keystorePath);
             if(!path.toFile().exists()) {
-                throw new RuntimeException("File " + keystorePath + " doesn't exist");
+                throw new RuntimeException("File " + config.keystorePath + " doesn't exist");
             }
             keystoreStream = Files.newInputStream(path);
         }
@@ -71,7 +76,7 @@ class Main {
         try {
             sslContext = TLSContextFactory.authenticatedContext(
                 keystoreStream,
-                config.getKeystorePassword(),
+                config.keystorePassword,
                 "TLSv1.3"
             );
         } catch (GeneralSecurityException e) {
@@ -84,7 +89,7 @@ class Main {
             return sslEngine;
         };
 
-        Server relpServer = new Server(config.getPort(), syslogFrameProcessor, sslContext, sslEngineFunction);
+        Server relpServer = new Server(config.port, syslogFrameProcessor, sslContext, sslEngineFunction);
         relpServer.start();
         Thread.sleep(Long.MAX_VALUE);
     }

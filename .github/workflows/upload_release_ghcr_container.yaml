@@ -23,7 +23,7 @@ jobs:
 
       - uses: actions/download-artifact@v4
         with:
-          name: Download artifact
+          name: artifact
           run-id: ${{ github.event.workflow_run.id }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
           path: rpm

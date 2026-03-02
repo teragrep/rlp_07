@@ -47,6 +47,11 @@ jobs:
         with:
           files: rpm/target/rpm/com.teragrep-rlp_07/RPMS/noarch/com.teragrep-rlp_07-*.noarch.rpm
 
+      - uses: actions/upload-artifact@v4
+        with:
+          name: artifact
+          path: rpm/target/rpm/com.teragrep-rlp_07/RPMS/noarch/com.teragrep-rlp_07-*.noarch.rpm
+
       - name: Update pkg_01 releases repository
         uses: teragrep/dfg_01@3.3.0
         with:

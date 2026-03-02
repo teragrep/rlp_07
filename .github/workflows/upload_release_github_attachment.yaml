@@ -9,7 +9,10 @@ jobs:
     name: Upload
     runs-on: ubuntu-latest
     permissions:
-      contents: write
+      contents: read
+      packages: write
+      attestations: write
+      id-token: write
 
     steps:
       - uses: actions/checkout@v4

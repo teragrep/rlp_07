@@ -69,4 +69,4 @@ COPY --from=assemblyContainer /sysroot /
 
 WORKDIR /opt/teragrep/rlp_07
 
-ENTRYPOINT /usr/bin/java -Dport="${RLP_07_PORT:-1601}" -Dtls="${RLP_07_TLS:-false}" -DtlsKeystorePassword="${RLP_07_TLS_KEYSTOREPASSWORD:-changeit}" -DtlsKeystore="${RLP_07_TLS_KEYSTORE:-/keystore/keystore-server.jks}" -Dloglevel="${RLP_07_LOGLEVEL:-info}" -jar lib/rlp_07.jar
+ENTRYPOINT ["/usr/bin/java", "-Dport=${RLP_07_PORT:-1601}", "-Dtls=${RLP_07_TLS:-false}", "-DtlsKeystorePassword=${RLP_07_TLS_KEYSTOREPASSWORD:-changeit}", "-DtlsKeystore=${RLP_07_TLS_KEYSTORE:-/keystore/keystore-server.jks}", "-Dloglevel=${RLP_07_LOGLEVEL:-info}", "-jar", "lib/rlp_07.jar"]

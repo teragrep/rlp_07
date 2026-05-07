@@ -47,11 +47,11 @@ FROM rockylinux/rockylinux:9-ubi-micro AS runtimeImage
 
 FROM rockylinux/rockylinux:9-ubi AS assemblyContainer
 
-RUN dnf install --releasever 9 --setopt install_weak_deps=false --nodocs --installroot /sysroot -y java-25-openjdk-headless rpm-build
-
 RUN mkdir -p /sysroot
 
 COPY --from=runtimeImage / /sysroot
+
+RUN dnf install --releasever 9 --setopt install_weak_deps=false --nodocs --installroot /sysroot -y java-25-openjdk-headless
 
 # load payload
 

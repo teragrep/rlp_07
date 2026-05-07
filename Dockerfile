@@ -51,8 +51,6 @@ RUN mkdir -p /sysroot
 
 COPY --from=runtimeImage / /sysroot
 
-RUN dnf install --releasever 9 --setopt install_weak_deps=false --nodocs --installroot /sysroot -y java-25-openjdk-headless
-
 # load payload
 
 COPY rpm/com.teragrep-rlp_07-*.rpm /rpm/

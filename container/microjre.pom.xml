@@ -41,15 +41,10 @@
             </goals>
             <configuration>
               <!-- produces nohup.out -->
-              <executable>/usr/bin/nohup</executable>
+              <executable>/usr/bin/bash</executable>
               <arguments>
-                <argument>/usr/lib/jvm/java-25-openjdk/bin/jdeps</argument>
-                <argument>--multi-release=25</argument>
-                <argument>-quiet</argument>
-                <argument>--print-module-deps</argument>
-                <argument>--ignore-missing-deps</argument>
-                <argument>--recursive</argument>
-                <argument>/opt/teragrep/rlp_07/lib/rlp_07.jar</argument>
+                <argument>-c</argument>
+                <argument>/usr/lib/jvm/java-25-openjdk/bin/jdeps --multi-release=25 -quiet -print-module-deps --ignore-missing-deps --recursive /opt/teragrep/rlp_07/lib/rlp_07.jar > modules.txt</argument>
               </arguments>
               <workingDirectory>${project.build.directory}/${project.artifactId}</workingDirectory>
             </configuration>
@@ -64,7 +59,7 @@
               <executable>/usr/bin/xargs</executable>
               <arguments>
                 <argument>-a</argument>
-                <argument>nohup.out</argument>
+                <argument>modules.txt</argument>
                 <argument>/usr/lib/jvm/java-25-openjdk/bin/jlink</argument>
                 <argument>--compress=zip-9</argument>
                 <argument>--no-header-files</argument>

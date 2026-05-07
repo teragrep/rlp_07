@@ -60,7 +60,7 @@ COPY container/microjre.pom.xml /build/
 
 WORKDIR /build
 
-RUN maven -f microjre.pom.xml clean package
+RUN mvn -f microjre.pom.xml clean package
 
 # patch runtime_image
 

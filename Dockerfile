@@ -43,13 +43,13 @@
 # a licensee so wish it.
 #
 
-FROM rockylinux/rockylinux:9-ubi-micro AS runtimeImage
+FROM rockylinux/rockylinux:9-ubi-micro AS runtime_image
 
-FROM rockylinux/rockylinux:9-ubi AS assemblyContainer
+FROM rockylinux/rockylinux:9-ubi AS assembly_container
 
 RUN mkdir -p /sysroot
 
-COPY --from=runtimeImage / /sysroot
+COPY --from=runtime_image / /sysroot
 
 # load payload
 
@@ -65,7 +65,7 @@ RUN dnf --installroot /sysroot clean all
 
 FROM scratch
 
-COPY --from=assemblyContainer /sysroot /
+COPY --from=assembly_container /sysroot /
 
 WORKDIR /opt/teragrep/rlp_07
 

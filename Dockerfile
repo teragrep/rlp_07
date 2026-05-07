@@ -47,19 +47,32 @@ FROM rockylinux/rockylinux:9-ubi-micro AS runtime_image
 
 FROM rockylinux/rockylinux:9-ubi AS assembly_container
 
+# assembly tools
+RUN dnf install -y rpm-build java-25-openjdk-headless maven
+
+# create microjre
+
+COPY rpm/com.teragrep-rlp_07-*.rpm /rpm/
+
+RUN dnf install /rpm/com.teragrep-rlp_07-*.rpm
+
+COPY container/microjre.pom.xml /build/
+
+WORKDIR /build
+
+RUN maven -f microjre.pom.xml clean package
+
+# patch runtime_image
+
 RUN mkdir -p /sysroot
 
 COPY --from=runtime_image / /sysroot
 
-# load payload
-
-COPY rpm/com.teragrep-rlp_07-*.rpm /rpm/
-
-COPY src/main/resources/keystore-server.jks /keystore/keystore-server.jks
-
-RUN dnf install --releasever 9 --setopt install_weak_deps=false --nodocs --installroot /sysroot -y /rpm/com.teragrep-rlp_07-*.rpm
+RUN dnf install --releasever 9 --setopt install_weak_deps=false --nodocs --installroot /sysroot -y /container/com.teragrep-rlp_07_microjre-*.rpm /rpm/com.teragrep-rlp_07-*.rpm
 
 RUN dnf --installroot /sysroot clean all
+
+COPY src/main/resources/keystore-server.jks /sysroot/keystore/keystore-server.jks
 
 # switch to runtime
 
@@ -69,4 +82,4 @@ COPY --from=assembly_container /sysroot /
 
 WORKDIR /opt/teragrep/rlp_07
 
-ENTRYPOINT ["/usr/bin/java", "-Dport=${RLP_07_PORT:-1601}", "-Dtls=${RLP_07_TLS:-false}", "-DtlsKeystorePassword=${RLP_07_TLS_KEYSTOREPASSWORD:-changeit}", "-DtlsKeystore=${RLP_07_TLS_KEYSTORE:-/keystore/keystore-server.jks}", "-Dloglevel=${RLP_07_LOGLEVEL:-info}", "-jar", "lib/rlp_07.jar"]
+ENTRYPOINT ["/opt/teragrep/rlp_07_microjre/bin/java", "-Dport=${RLP_07_PORT:-1601}", "-Dtls=${RLP_07_TLS:-false}", "-DtlsKeystorePassword=${RLP_07_TLS_KEYSTOREPASSWORD:-changeit}", "-DtlsKeystore=${RLP_07_TLS_KEYSTORE:-/keystore/keystore-server.jks}", "-Dloglevel=${RLP_07_LOGLEVEL:-info}", "-jar", "lib/rlp_07.jar"]

@@ -54,7 +54,7 @@ RUN dnf install -y rpm-build java-25-openjdk-headless maven
 
 COPY rpm/com.teragrep-rlp_07-*.rpm /rpm/
 
-RUN dnf install /rpm/com.teragrep-rlp_07-*.rpm
+RUN dnf install -y /rpm/com.teragrep-rlp_07-*.rpm
 
 COPY container/microjre.pom.xml /build/
 
@@ -72,13 +72,14 @@ RUN dnf install --releasever 9 --setopt install_weak_deps=false --nodocs --insta
 
 RUN dnf --installroot /sysroot clean all
 
-COPY src/main/resources/keystore-server.jks /sysroot/keystore/keystore-server.jks
 
 # switch to runtime
 
 FROM scratch
 
 COPY --from=assembly_container /sysroot /
+
+COPY src/main/resources/keystore-server.jks /keystore/keystore-server.jks
 
 WORKDIR /opt/teragrep/rlp_07
 

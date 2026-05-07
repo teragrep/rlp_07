@@ -43,7 +43,7 @@
               <!-- produces nohup.out -->
               <executable>/usr/bin/nohup</executable>
               <arguments>
-                <argument>/usr/lib/jvm/java-25-temurin-jdk/bin/jdeps</argument>
+                <argument>/usr/lib/jvm/java-25-openjdk/bin/jdeps</argument>
                 <argument>--multi-release=25</argument>
                 <argument>-quiet</argument>
                 <argument>--print-module-deps</argument>
@@ -65,7 +65,7 @@
               <arguments>
                 <argument>-a</argument>
                 <argument>nohup.out</argument>
-                <argument>/usr/lib/jvm/java-25-temurin-jdk/bin/jlink</argument>
+                <argument>/usr/lib/jvm/java-25-openjdk/bin/jlink</argument>
                 <argument>--compress=zip-9</argument>
                 <argument>--no-header-files</argument>
                 <argument>--no-man-pages</argument>

@@ -48,7 +48,7 @@ FROM rockylinux/rockylinux:9-ubi-micro AS runtime_image
 FROM rockylinux/rockylinux:9-ubi AS assembly_container
 
 # assembly tools
-RUN dnf install -y rpm-build java-25-openjdk-headless maven
+RUN dnf install -y rpm-build java-25-openjdk-devel maven
 
 # create microjre
 
@@ -56,9 +56,9 @@ COPY rpm/com.teragrep-rlp_07-*.rpm /rpm/
 
 RUN dnf install -y /rpm/com.teragrep-rlp_07-*.rpm
 
-COPY container/microjre.pom.xml /build/
+COPY container/microjre.pom.xml /container/
 
-WORKDIR /build
+WORKDIR /container
 
 RUN mvn -f microjre.pom.xml clean package
 

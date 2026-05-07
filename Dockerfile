@@ -42,10 +42,12 @@
 # Teragrep, the applicable Commercial License may apply to this file if you as
 # a licensee so wish it.
 #
+ 
+FROM rockylinux/rockylinux:9-ubi AS assemblycontainer
 
-FROM rockylinux/rockylinux:9
+RUN mkdir -p /sysroot
 
-RUN dnf install --releasever 9 --setopt install_weak_deps=false --nodocs -y java-25-openjdk-headless 
+RUN dnf install --releasever 9 --setopt install_weak_deps=false --nodocs --installroot /sysroot -y java-25-openjdk-headless 
 
 # load payload
 
@@ -53,13 +55,17 @@ COPY rpm/com.teragrep-rlp_07-*.rpm /rpm/
 
 COPY src/main/resources/keystore-server.jks /keystore/keystore-server.jks
 
-RUN dnf install --releasever 9 --setopt install_weak_deps=false --nodocs -y /rpm/com.teragrep-rlp_07-*.rpm
+RUN dnf install --releasever 9 --setopt install_weak_deps=false --nodocs --installroot /sysroot -y /rpm/com.teragrep-rlp_07-*.rpm
 
 # clean up
 
-RUN dnf clean all
+RUN dnf --installroot /sysroot clean all
 
 # switch to runtime
+
+FROM rockylinux/rockylinux:9-ubi-micro
+
+COPY --from=assemblycontainer /sysroot /
 
 WORKDIR /opt/teragrep/rlp_07
 

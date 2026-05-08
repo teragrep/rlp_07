@@ -48,7 +48,7 @@ FROM rockylinux/rockylinux:9-ubi-micro AS runtime_image
 FROM rockylinux/rockylinux:9-ubi AS assembly_container
 
 # assembly tools
-RUN dnf install -y rpm-build java-25-openjdk-devel maven
+RUN dnf install -y rpm-build java-25-openjdk-devel java-25-openjdk-jmods maven
 
 # create microjre
 

@@ -31,7 +31,7 @@
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>exec-maven-plugin</artifactId>
-        <version>1.1.1</version>
+        <version>3.6.3</version>
         <executions>
           <execution>
             <id>jdeps</id>
@@ -40,10 +40,8 @@
               <goal>exec</goal>
             </goals>
             <configuration>
-              <!-- produces nohup.out -->
-              <executable>/usr/bin/nohup</executable>
+              <executable>/usr/lib/jvm/java-25-openjdk/bin/jdeps</executable>
               <arguments>
-                <argument>/usr/lib/jvm/java-25-openjdk/bin/jdeps</argument>
                 <argument>--multi-release=25</argument>
                 <argument>-quiet</argument>
                 <argument>--print-module-deps</argument>
@@ -52,6 +50,7 @@
                 <argument>/opt/teragrep/rlp_07/lib/rlp_07.jar</argument>
               </arguments>
               <workingDirectory>${project.build.directory}/${project.artifactId}</workingDirectory>
+              <outputFile>${project.build.directory}/jre_modules.out</outputFile>
             </configuration>
           </execution>
           <execution>
@@ -64,7 +63,7 @@
               <executable>/usr/bin/xargs</executable>
               <arguments>
                 <argument>-a</argument>
-                <argument>nohup.out</argument>
+                <argument>jre_modules.out</argument>
                 <argument>/usr/lib/jvm/java-25-openjdk/bin/jlink</argument>
                 <argument>--compress=zip-9</argument>
                 <argument>--no-header-files</argument>

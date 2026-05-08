@@ -113,11 +113,13 @@
             <passphrase>${env.RPM_SIGNING_PASSPHRASE}</passphrase>
           </keyPassphrase>
           -->
+          <!--
           <defineStatements>
             <defineStatement>_build_id_links none</defineStatement>
             <defineStatement>__provides_exclude ^osgi\\(.*$</defineStatement>
             <defineStatement>__requires_exclude ^osgi\\(.*$</defineStatement>
           </defineStatements>
+          -->
           <mappings>
             <mapping>
               <directory>/opt/teragrep/${project.artifactId}</directory>

@@ -1,10 +1,13 @@
 package com.teragrep.rlp_07;
 
+import ch.qos.logback.classic.Level;
 import com.teragrep.rlp_03.FrameProcessor;
 import com.teragrep.rlp_03.Server;
 import com.teragrep.rlp_03.SyslogFrameProcessor;
+import ch.qos.logback.classic.LoggerContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLEngine;
@@ -31,7 +34,11 @@ class Main {
         config = new Config();
         if(config.loglevel != null) {
             LOGGER.info("Setting loglevel to <[{}]>", config.loglevel);
-            System.setProperty("org.slf4j.simpleLogger.defaultLogLevel", config.loglevel);
+            LoggerContext loggerContext = (LoggerContext) LoggerFactory.getILoggerFactory();
+            ch.qos.logback.classic.Logger logger = loggerContext.getLogger("com.teragrep");
+
+            logger.setLevel(Level.toLevel(config.loglevel.toUpperCase()));
+
         }
         try {
             if (config.isTls) {

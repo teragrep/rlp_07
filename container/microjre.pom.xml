@@ -117,8 +117,9 @@
             <defineStatement>_build_id_links none</defineStatement>
             <defineStatement>__provides_exclude ^osgi\\(.*$</defineStatement>
             <defineStatement>__requires_exclude ^osgi\\(.*$</defineStatement>
-            <defineStatement>__provides_exclude ^.*\\.so.*$</defineStatement>
-            <defineStatement>__requires_exclude ^.*\\.so.*$</defineStatement>
+            <defineStatement>_privatelibs libzip|libverify|libsyslookup|libsimdsort|libnio|libnet|libmanagement|libjsig|libjli|libjimage|libjava</defineStatement>
+            <defineStatement>__requires_exclude ^(%{_privatelibs})\.so</defineStatement>
+            <defineStatement>__provides_exclude ^(%{_privatelibs})\.so</defineStatement>
           </defineStatements>
           <mappings>
             <mapping>

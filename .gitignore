@@ -1,3 +1,4 @@
-.idea
-target/*
-rpm/target/*
+/.idea/
+/target/
+/rpm/target/
+/dependency-reduced-pom.xml

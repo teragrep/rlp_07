@@ -19,8 +19,8 @@ jobs:
       - name: Setup Java
         uses: actions/setup-java@v4
         with:
-          java-version: 8.0.292+10
+          java-version: 11
           distribution: 'adopt'
 
       - name: Run CI
-        run: mvn --batch-mode clean verify
+        run: mvn -Dsha1= --batch-mode clean verify

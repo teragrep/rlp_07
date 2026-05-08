@@ -78,7 +78,7 @@
               <recurseDirectories>true</recurseDirectories>
               <sources>
                 <source>
-                  <location>${project.basedir}/../target/rlp_07-jar-with-dependencies.jar</location>
+                  <location>${project.basedir}/../target/rlp_07.jar</location>
                   <destination>rlp_07.jar</destination>
                 </source>
               </sources>

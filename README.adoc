@@ -22,11 +22,11 @@ Custom server keystore can be supplied with "-DtlsKeystore=path/to/file.jks".
 
 Custom server keystore password can be supplied with "-DtlsKeystorePassword=MyCustomPassword".
 
-Internal component logging levels can be managed with "-Dloglevel=INFO". You can read more about logging levels https://logging.apache.org/log4j/2.x/manual/customloglevels.html[here].
+Internal component logging levels can be managed with "-Dloglevel=info". You can read more about logging levels https://www.slf4j.org/apidocs/org/slf4j/simple/SimpleLogger.html[here].
 
 [source, bash]
 ----
-java -Dlog4j.configurationFile=log4j2.xml -jar rlp_07.jar
+java -Dloglevel=debug -jar rlp_07.jar
 ----
 
 == Running the container
@@ -53,8 +53,8 @@ The container respects the following environment variables
 |RLP_07_TLS_KEYSTOREPASSWORD=changeit
 |-DtlsKeystorePassword=changeit
 
-|RLP_07_LOGLEVEL=INFO
-|-Dloglevel=INFO
+|RLP_07_LOGLEVEL=info
+|-Dloglevel=info
 |===
 
 == Contributing

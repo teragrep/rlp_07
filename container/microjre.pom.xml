@@ -130,7 +130,6 @@
               <sources>
                 <source>
                   <location>${project.build.directory}/${project.artifactId}/${project.artifactId}</location>
-                  <destination>.</destination>
                 </source>
               </sources>
             </mapping>

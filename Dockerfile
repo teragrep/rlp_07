@@ -89,4 +89,4 @@ ENV RLP_07_TLS_KEYSTOREPASSWORD=changeit
 ENV RLP_07_TLS_KEYSTORE=/keystore/keystore-server.jks
 ENV RLP_07_LOGLEVEL=info
 
-ENTRYPOINT ["/opt/teragrep/rlp_07_microjre/bin/java", "-Dport=${RLP_07_PORT}", "-Dtls=${RLP_07_TLS}", "-DtlsKeystorePassword=${RLP_07_TLS_KEYSTOREPASSWORD}", "-DtlsKeystore=${RLP_07_TLS_KEYSTORE}", "-Dloglevel=${RLP_07_LOGLEVEL}", "-jar", "lib/rlp_07.jar"]
+ENTRYPOINT ["/bin/sh", "-c", "exec /opt/teragrep/rlp_07_microjre/bin/java -Dport=${RLP_07_PORT} -Dtls=${RLP_07_TLS} -DtlsKeystorePassword=${RLP_07_TLS_KEYSTOREPASSWORD} -DtlsKeystore=${RLP_07_TLS_KEYSTORE} -Dloglevel=${RLP_07_LOGLEVEL} -jar lib/rlp_07.jar"]

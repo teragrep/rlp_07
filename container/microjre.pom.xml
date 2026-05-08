@@ -50,7 +50,7 @@
                 <argument>/opt/teragrep/rlp_07/lib/rlp_07.jar</argument>
               </arguments>
               <workingDirectory>${project.build.directory}/${project.artifactId}</workingDirectory>
-              <outputFile>${project.build.directory}/jre_modules.out</outputFile>
+              <outputFile>${project.build.directory}/${project.artifactId}/jre_modules.out</outputFile>
             </configuration>
           </execution>
           <execution>

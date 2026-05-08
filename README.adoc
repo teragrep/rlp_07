@@ -22,7 +22,7 @@ Custom server keystore can be supplied with "-DtlsKeystore=path/to/file.jks".
 
 Custom server keystore password can be supplied with "-DtlsKeystorePassword=MyCustomPassword".
 
-Internal component logging levels can be managed with "-Dloglevel=info". You can read more about logging levels https://www.slf4j.org/apidocs/org/slf4j/simple/SimpleLogger.html[here].
+Internal component logging levels can be managed with "-Dloglevel=info". You can read more about logging levels https://javadoc.io/doc/ch.qos.logback/logback-classic/1.4.6/ch.qos.logback.classic/ch/qos/logback/classic/Level.html[here].
 
 [source, bash]
 ----

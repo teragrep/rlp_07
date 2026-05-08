@@ -3,8 +3,6 @@ package com.teragrep.rlp_07;
 import com.teragrep.rlp_03.FrameProcessor;
 import com.teragrep.rlp_03.Server;
 import com.teragrep.rlp_03.SyslogFrameProcessor;
-import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.core.config.Configurator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -33,7 +31,7 @@ class Main {
         config = new Config();
         if(config.loglevel != null) {
             LOGGER.info("Setting loglevel to <[{}]>", config.loglevel);
-            Configurator.setAllLevels("com.teragrep", Level.valueOf(config.loglevel));
+            System.setProperty("org.slf4j.simpleLogger.defaultLogLevel", config.loglevel);
         }
         try {
             if (config.isTls) {

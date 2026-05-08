@@ -23,4 +23,4 @@ jobs:
           distribution: 'adopt'
 
       - name: Run CI
-        run: mvn --batch-mode clean verify
+        run: mvn -Dsha1= --batch-mode clean verify

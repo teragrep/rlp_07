@@ -25,6 +25,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.GeneralSecurityException;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.function.Consumer;
@@ -46,14 +47,14 @@ class Main {
     static Config config;
 
     public static void main(String[] args) {
+
         config = new Config();
-        if(config.loglevel != null) {
-            Main.LOGGER.info("Setting loglevel to <[{}]>", config.loglevel);
+        if (config.loglevel != null) {
+            LOGGER.debug("Setting loglevel to <[{}]>", config.loglevel);
             LoggerContext loggerContext = (LoggerContext) LoggerFactory.getILoggerFactory();
             ch.qos.logback.classic.Logger logger = loggerContext.getLogger("com.teragrep");
 
             logger.setLevel(Level.toLevel(config.loglevel.toUpperCase()));
-
         }
 
         ExecutorService executorService = Executors.newFixedThreadPool(1);
@@ -73,14 +74,14 @@ class Main {
 
         if (config.isTls) {
             socketFactory = tlsServer();
-        } else {
+        }
+        else {
+            LOGGER.debug("Starting plain server on port <[{}]>", config.port);
             socketFactory = new PlainFactory();
         }
 
         ServerFactory serverFactory = new ServerFactory(
-                eventLoop,
-                executorService,
-                socketFactory,
+                eventLoop, executorService, socketFactory,
                 new FrameDelegationClockFactory(frameDelegateSupplier)
         );
 
@@ -89,11 +90,29 @@ class Main {
             serverFactory.create(config.port);
         }
         catch (IOException e) {
-            LOGGER.error("Failed to run: <{}>", e.getMessage(), e);
+            LOGGER.error("Failed to run: <[{}]>", e.getMessage(), e);
             throw new UncheckedIOException(e);
         }
 
-        //eventLoop.stop();
+        final CountDownLatch latch = new CountDownLatch(1);
+
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            LOGGER.debug("stopping server at port <[{}]>", config.port);
+
+            latch.countDown();
+        }));
+
+        while (true)
+            try {
+                latch.await();
+                break;
+            }
+            catch (InterruptedException e) {
+                LOGGER.debug("Interruption in main thread latch.await(), retrying", e);
+            }
+
+
+        eventLoop.stop();
         try {
             eventLoopThread.join();
         }
@@ -101,18 +120,18 @@ class Main {
             throw new RuntimeException(interruptedException);
         }
 
-        System.out.println("server stopped at port <" + config.port + ">");
+        LOGGER.debug("server stopped at port <[{}]>", config.port);
 
         executorService.shutdown();
     }
 
 
     private static TLSFactory tlsServer() {
-        LOGGER.info("Starting TLS server on port <[{}]>", config.port);
+        LOGGER.debug("Starting TLS server on port <[{}]>", config.port);
 
         final InputStream keystoreStream;
         if(config.keystorePath != null) {
-            LOGGER.info("Using user supplied keystore");
+            LOGGER.debug("Using user supplied keystore");
             Path path = Paths.get(config.keystorePath);
             if(!path.toFile().exists()) {
                 throw new RuntimeException("File " + config.keystorePath + " doesn't exist");
@@ -125,7 +144,7 @@ class Main {
             }
         }
         else {
-            LOGGER.info("Using default keystore");
+            LOGGER.debug("Using default keystore");
             // get server keyStore as inputstream, works on JAR packaging as well this way
             keystoreStream = Main.class.getClassLoader().getResourceAsStream("keystore-server.jks");
         }

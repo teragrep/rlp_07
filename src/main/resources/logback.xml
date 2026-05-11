@@ -6,13 +6,29 @@
     <import class="ch.qos.logback.core.ConsoleAppender"/>
 
     <appender name="STDOUT" class="ConsoleAppender">
+        <target>System.out</target>
         <encoder class="PatternLayoutEncoder">
-            <!--<pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} -%kvp- %msg%n</pattern>-->
             <pattern>%msg</pattern>
         </encoder>
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>INFO</level>
+        </filter>
+    </appender>
+    <appender name="STDERR" class="ConsoleAppender">
+        <target>System.err</target>
+        <encoder class="PatternLayoutEncoder">
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} -%kvp- %msg%n</pattern>
+        </encoder>
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>INFO</level>
+            <onMatch>DENY</onMatch>
+            <onMismatch>NEUTRAL</onMismatch>
+        </filter>
     </appender>
 
-    <root level="info">
+    <root level="debug">
         <appender-ref ref="STDOUT"/>
+        <appender-ref ref="STDERR"/>
     </root>
+
 </configuration>

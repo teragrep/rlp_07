@@ -57,7 +57,7 @@ class Main {
             logger.setLevel(Level.toLevel(config.loglevel.toUpperCase()));
         }
 
-        ExecutorService executorService = Executors.newFixedThreadPool(1);
+        final ExecutorService executorService = Executors.newFixedThreadPool(1);
         final EventLoop eventLoop;
         try {
             eventLoop = eventLoopFactory.create();
@@ -66,7 +66,7 @@ class Main {
             throw new RuntimeException(e);
         }
 
-        Thread eventLoopThread = new Thread(eventLoop);
+        final Thread eventLoopThread = new Thread(eventLoop);
 
         eventLoopThread.start();
 
@@ -80,7 +80,7 @@ class Main {
             socketFactory = new PlainFactory();
         }
 
-        ServerFactory serverFactory = new ServerFactory(
+        final ServerFactory serverFactory = new ServerFactory(
                 eventLoop, executorService, socketFactory,
                 new FrameDelegationClockFactory(frameDelegateSupplier)
         );

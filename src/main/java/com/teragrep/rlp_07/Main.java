@@ -97,7 +97,7 @@ class Main {
         final CountDownLatch latch = new CountDownLatch(1);
 
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-            LOGGER.debug("stopping server at port <[{}]>", config.port);
+            LOGGER.debug("Stopping server at port <[{}]>", config.port);
 
             latch.countDown();
         }));
@@ -120,7 +120,7 @@ class Main {
             throw new RuntimeException(interruptedException);
         }
 
-        LOGGER.debug("server stopped at port <[{}]>", config.port);
+        LOGGER.debug("Server stopped at port <[{}]>", config.port);
 
         executorService.shutdown();
     }

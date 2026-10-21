@@ -48,27 +48,27 @@ FROM rockylinux/rockylinux:9-ubi-micro AS runtime_image
 FROM rockylinux/rockylinux:9-ubi AS assembly_container
 
 # assembly tools
-RUN dnf install -y rpm-build java-25-openjdk-devel java-25-openjdk-jmods maven
+RUN dnf install --assumeyes rpm-build java-25-openjdk-devel java-25-openjdk-jmods maven
 
 # create microjre
 
 COPY rpm/com.teragrep-rlp_07-*.rpm /rpm/
 
-RUN dnf install -y /rpm/com.teragrep-rlp_07-*.rpm
+RUN dnf install --assumeyes /rpm/com.teragrep-rlp_07-*.rpm
 
 COPY container/microjre.pom.xml /container/
 
 WORKDIR /container
 
-RUN mvn -B -f microjre.pom.xml clean package
+RUN mvn --batch-mode --file microjre.pom.xml clean package
 
 # patch runtime_image
 
-RUN mkdir -p /sysroot
+RUN mkdir --parents /sysroot
 
 COPY --from=runtime_image / /sysroot
 
-RUN dnf install --releasever 9 --setopt install_weak_deps=false --nodocs --installroot /sysroot -y /container/target/rpm/com.teragrep-rlp_07_microjre/RPMS/x86_64/com.teragrep-rlp_07_microjre-*.rpm /rpm/com.teragrep-rlp_07-*.rpm
+RUN dnf install --releasever 9 --setopt install_weak_deps=false --nodocs --installroot /sysroot --assumeyes /container/target/rpm/com.teragrep-rlp_07_microjre/RPMS/x86_64/com.teragrep-rlp_07_microjre-*.rpm /rpm/com.teragrep-rlp_07-*.rpm && dnf upgrade --assumeyes
 
 RUN dnf --installroot /sysroot clean all
 

@@ -13,7 +13,7 @@ on:
 
 jobs:
   trivy-scan:
-    name: Upload Container
+    name: Trivy Security Scan for release container
     runs-on: ubuntu-latest
     if: ${{ github.event.workflow_run.conclusion == 'success' }}
     permissions:
@@ -37,19 +37,16 @@ jobs:
           # On schedule, scan the latest production image in your registry
           echo "CONTAINER_NAME=ghcr.io/${{ env.REPO_LC }}/app:latest" >> $GITHUB_ENV
 
-      - name: 'Build Image'
-        run: |
-          docker buildx build --output type=docker --tag "${CONTAINER_NAME}" .
-
       - name: Run Trivy image scan (SARIF for Security Tab)
         uses: aquasecurity/trivy-action@master
         with:
+          scan-type: 'image'
           image-ref: '${{ env.CONTAINER_NAME }}'
           trivy-config: .trivy.yaml
-          ignorefile: .trivyignore.yaml
           format: 'sarif'
           output: 'trivy-results.sarif'
           exit-code: '0' # Let the SARIF upload step run before failing the job
+          cache: 'false'
 
       - name: Upload scan results to GitHub Security tab
         uses: github/codeql-action/upload-sarif@v4
@@ -60,7 +57,10 @@ jobs:
       - name: Enforce build failure on Critical/High CVEs
         uses: aquasecurity/trivy-action@master
         with:
+          scan-type: 'image'
           image-ref: '${{ env.CONTAINER_NAME }}'
           trivy-config: .trivy.yaml
-          ignorefile: .trivyignore.yaml
           format: 'table'
+          cache: 'false'
+          severity: 'HIGH,CRITICAL'
+          ignore-unfixed: true

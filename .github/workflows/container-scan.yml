@@ -37,10 +37,6 @@ jobs:
           # On schedule, scan the latest production image in your registry
           echo "CONTAINER_NAME=ghcr.io/${{ env.REPO_LC }}/app:latest" >> $GITHUB_ENV
 
-      - name: 'Build Image'
-        run: |
-          docker buildx build --output type=docker --tag "${CONTAINER_NAME}" .
-
       - name: Run Trivy image scan (SARIF for Security Tab)
         uses: aquasecurity/trivy-action@master
         with:

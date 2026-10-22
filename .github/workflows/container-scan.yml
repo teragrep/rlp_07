@@ -38,7 +38,7 @@ jobs:
       - name: Lowercase repository name
         run: echo "REPO_LC=${GITHUB_REPOSITORY,,}" >> $GITHUB_ENV
 
-- name: Set target image name
+      - name: Set target image name
         id: target
         run: |
           if [ "${{ github.event_name }}" == "schedule" ]; then

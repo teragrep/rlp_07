@@ -1,0 +1,57 @@
+name: Trivy Security Scan
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+permissions:
+  contents: read
+  security-events: write
+
+jobs:
+  trivy-scan:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: artifact
+          run-id: ${{ github.event.workflow_run.id }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: rpm
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2.5.0
+
+      - name: 'Build Image'
+        run: |
+          docker buildx build --output type=docker --tag ghcr.io/${{ env.REPO_LC }}/app:${{ github.event.workflow_run.head_branch }} --tag ghcr.io/${{ env.REPO_LC }}/app:${{ github.sha }} .
+
+      - name: Run Trivy image scan (SARIF for Security Tab)
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: 'app:${{ github.sha }}'
+          trivy-config: trivy.yaml
+          ignorefile: .trivyignore.yaml
+          format: 'sarif'
+          output: 'trivy-results.sarif'
+          exit-code: '0' # Let the SARIF upload step run before failing the job
+
+      - name: Upload scan results to GitHub Security tab
+        uses: github/codeql-action/upload-sarif@v3
+        if: always()
+        with:
+          sarif_file: 'trivy-results.sarif'
+
+      - name: Enforce build failure on Critical/High CVEs
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: 'app:${{ github.sha }}'
+          trivy-config: .trivy.yaml
+          ignorefile: .trivyignore.yaml
+          format: 'table'

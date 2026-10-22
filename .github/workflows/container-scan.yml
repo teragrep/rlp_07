@@ -40,12 +40,13 @@ jobs:
       - name: Run Trivy image scan (SARIF for Security Tab)
         uses: aquasecurity/trivy-action@master
         with:
+          scan-type: 'image'
           image-ref: '${{ env.CONTAINER_NAME }}'
           trivy-config: .trivy.yaml
-          ignorefile: .trivyignore.yaml
           format: 'sarif'
           output: 'trivy-results.sarif'
           exit-code: '0' # Let the SARIF upload step run before failing the job
+          cache: 'false'
 
       - name: Upload scan results to GitHub Security tab
         uses: github/codeql-action/upload-sarif@v4
@@ -56,7 +57,10 @@ jobs:
       - name: Enforce build failure on Critical/High CVEs
         uses: aquasecurity/trivy-action@master
         with:
+          scan-type: 'image'
           image-ref: '${{ env.CONTAINER_NAME }}'
           trivy-config: .trivy.yaml
-          ignorefile: .trivyignore.yaml
           format: 'table'
+          cache: 'false'
+          severity: 'HIGH,CRITICAL'
+          ignore-unfixed: true

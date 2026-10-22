@@ -1,16 +1,19 @@
 name: Trivy Security Scan
 
 on:
-  push:
-    branches: [ "main" ]
-
-permissions:
-  contents: read
-  security-events: write
+  workflow_run:
+    workflows: ["Upload Artifact as GitHub Release Attachment"]
+    types: [completed]
 
 jobs:
   trivy-scan:
+    name: Upload Container
     runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    permissions:
+      contents: read
+      security-events: write
+
     steps:
       - uses: actions/checkout@v4
         with:

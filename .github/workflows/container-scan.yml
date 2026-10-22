@@ -2,8 +2,14 @@ name: Trivy Security Scan
 
 on:
   workflow_run:
-    workflows: ["Upload Artifact as GitHub Release Attachment"]
+    workflows: ["Build and upload GHCR container"]
     types: [completed]
+
+  schedule:
+    - cron: '17 4 * * *'
+
+  workflow_dispatch:
+
 
 jobs:
   trivy-scan:
@@ -32,14 +38,25 @@ jobs:
       - name: Lowercase repository name
         run: echo "REPO_LC=${GITHUB_REPOSITORY,,}" >> $GITHUB_ENV
 
+- name: Set target image name
+        id: target
+        run: |
+          if [ "${{ github.event_name }}" == "schedule" ]; then
+            # On schedule, scan the latest production image in your registry
+            echo "CONTAINER_NAME=ghcr.io/${{ env.REPO_LC }}/app:latest" >> $GITHUB_ENV
+          else
+            # On PR/push, scan the freshly built local image
+            echo "CONTAINER_NAME=ghcr.io/${{ env.REPO_LC }}/app:${{ github.sha }}" >> $GITHUB_ENV
+          fi
+
       - name: 'Build Image'
         run: |
-          docker buildx build --output type=docker --tag ghcr.io/${{ env.REPO_LC }}/app:${{ github.sha }} .
+          docker buildx build --output type=docker --tag "${CONTAINER_NAME}" .
 
       - name: Run Trivy image scan (SARIF for Security Tab)
         uses: aquasecurity/trivy-action@master
         with:
-          image-ref: 'ghcr.io/${{ env.REPO_LC }}/app:${{ github.sha }}'
+          image-ref: '${{ env.CONTAINER_NAME }}'
           trivy-config: .trivy.yaml
           ignorefile: .trivyignore.yaml
           format: 'sarif'
@@ -55,7 +72,7 @@ jobs:
       - name: Enforce build failure on Critical/High CVEs
         uses: aquasecurity/trivy-action@master
         with:
-          image-ref: 'ghcr.io/${{ env.REPO_LC }}/app:${{ github.sha }}'
+          image-ref: '${{ env.CONTAINER_NAME }}'
           trivy-config: .trivy.yaml
           ignorefile: .trivyignore.yaml
           format: 'table'

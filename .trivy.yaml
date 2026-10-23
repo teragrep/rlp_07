@@ -1,0 +1,31 @@
+# trivy.yaml
+timeout: 10m
+
+# Scan types: vuln (vulnerabilities), misconfig (IaC/Dockerfile), secret (exposed keys)
+scanners:
+  - vuln
+  - secret
+  - misconfig
+
+# Exit with a non-zero code (1) if matching issues are found to block broken builds
+exit-code: 1
+
+vulnerability:
+  # Scan both OS packages (Alpine, Debian, etc.) and language dependencies (npm, pip, Go, etc.)
+  type:
+    - os
+    - library
+  # Only report vulnerabilities that actually have an upstream fix available
+  ignore-unfixed: false
+
+severity:
+  - CRITICAL
+  - HIGH
+  - MEDIUM
+  - LOW
+  - UNKNOWN
+
+# Exclude non-production directories from filesystem and secret scans
+scan:
+  skip-dirs:
+    - src/test

@@ -68,9 +68,9 @@ RUN mkdir --parents /sysroot
 
 COPY --from=runtime_image / /sysroot
 
-RUN dnf install --releasever 9 --setopt install_weak_deps=false --nodocs --installroot /sysroot --assumeyes /container/target/rpm/com.teragrep-rlp_07_microjre/RPMS/x86_64/com.teragrep-rlp_07_microjre-*.rpm /rpm/com.teragrep-rlp_07-*.rpm
+RUN dnf upgrade --assumeyes && dnf install --releasever 9 --setopt install_weak_deps=false --nodocs --installroot /sysroot --assumeyes /container/target/rpm/com.teragrep-rlp_07_microjre/RPMS/x86_64/com.teragrep-rlp_07_microjre-*.rpm /rpm/com.teragrep-rlp_07-*.rpm
 
-RUN dnf upgrade --assumeyes && dnf --installroot /sysroot clean all
+RUN dnf --installroot /sysroot clean all
 
 
 # switch to runtime
